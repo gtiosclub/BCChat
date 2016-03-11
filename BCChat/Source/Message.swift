@@ -18,14 +18,12 @@ struct Message {
     
     var username:String = "nil"
     var message:String = "nil"
-    var date:String = Message.dateFormatter.stringFromDate(NSDate())
+    var date:NSDate = NSDate()
+    var fbid:String = "nil"
+    var platform:String = "nil"
     
-    func toDictionary() -> [String: AnyObject?] {
-        return [
-            "username":username,
-            "message":message,
-            "date":date
-        ]
+    func dateString() -> String {
+        return Message.dateFormatter.stringFromDate(date)
     }
     
 }

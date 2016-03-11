@@ -21,6 +21,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var containerViewBottom: NSLayoutConstraint!
     var username:String = ""
+    var fbid:String = ""
     var root = Firebase(url: "https://bootcampchatapp.firebaseio.com")
     var token: FBSDKAccessToken!
     var authData:FAuthData!
@@ -35,7 +36,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.sortedMessages.sortInPlace({ leftMessage, rightMessage in
                 let leftDate = leftMessage.date
                 let rightDate = rightMessage.date
-                return leftDate < rightDate
+                return leftDate > rightDate
             })
             reloadTable()
         }
@@ -46,15 +47,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        let req = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"name"], tokenString:token.tokenString, version: nil, HTTPMethod:"GET")
-        req.startWithCompletionHandler({ (connection, result, error:NSError!) -> Void in
-            if let error = error {
-                print("error \(error)")
-            } else {
-                print("name \(result["name"])")
-                self.username = result["name"] as! String
-            }
-        })
+        tableView.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI))
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidAppear:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidDisappear", name: UIKeyboardWillHideNotification, object: nil)
         
@@ -70,7 +63,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             var m = Message()
             m.username = snapshot.value!["username"] as! String
             m.message = snapshot.value!["message"] as! String
-            m.date = snapshot.value!["date"] as! String
+            if let t = snapshot.value!["date"] as! NSTimeInterval! {
+                m.date = NSDate(timeIntervalSince1970: t)
+            }
+            m.platform = snapshot.value!["platform"] as! String
+            m.fbid = snapshot.value["fbid"] as! String
             self.sortedMessages.append(m)
         })
     }
@@ -85,15 +82,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             shakeMessageFieldX()
             return
         }
-        var newMessage = Message()
-        newMessage.message = messageField.text!
-        newMessage.username = self.username
         let chatRoot = root.childByAppendingPath("chat")
         let messageKeyRoot = chatRoot.childByAutoId()
         let messagePOST = [
-            "username": newMessage.username,
-            "date": newMessage.date,
-            "message": newMessage.message
+            "username": self.username,
+            "date": FirebaseServerValue.timestamp(),
+            "message": messageField.text!,
+            "platform": "ios",
+            "fbid": self.fbid
         ]
         messageKeyRoot.setValue(messagePOST)
         messageField.text = ""
@@ -152,11 +148,20 @@ extension ChatViewController {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         //
+        
         let cell = tableView.dequeueReusableCellWithIdentifier("ChatCell", forIndexPath: indexPath) as! ChatTableViewCell
         let row = Int(indexPath.row)
         cell.usernameLabel.text = sortedMessages[row].username
-        cell.dateLabel.text = sortedMessages[row].date
+        cell.dateLabel.text = sortedMessages[row].dateString()
         cell.textView.text = sortedMessages[row].message
+        cell.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
+        if sortedMessages[row].fbid == self.fbid {
+            cell.backgroundColor = UIColor.grayColor()
+            cell.usernameLabel.textColor = UIColor.whiteColor()
+            cell.dateLabel.textColor = UIColor.lightTextColor()
+            cell.textView.backgroundColor = UIColor.clearColor()
+            cell.textView.textColor = UIColor.whiteColor()
+        }
         return cell
     }
     
@@ -191,8 +196,8 @@ extension ChatViewController {
         if sortedMessages.isEmpty {
             return
         }
-        let indexPath = NSIndexPath(forItem: sortedMessages.count - 1, inSection: 0)
-        tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        let indexPath = NSIndexPath(forItem: 0, inSection: 0)
+        tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Top, animated: true)
         
     }
     

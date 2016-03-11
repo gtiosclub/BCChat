@@ -18,9 +18,11 @@ class LoginViewController: UIViewController {
     var root = Firebase(url: "https://bootcampchatapp.firebaseio.com")
     let facebookManager = FBSDKLoginManager()
     
+    var username:String = ""
+    var fbid:String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.setNeedsStatusBarAppearanceUpdate()
         // Do any additional setup after loading the view.
     }
@@ -56,7 +58,18 @@ class LoginViewController: UIViewController {
                             print("Logged in! \(authData)")
                             self.currentAuthData = authData
                             self.currentToken = facebookResult.token
-                            self.performSegueWithIdentifier("LoginSegue", sender: self)
+                            let req = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"name,id"], tokenString:facebookResult.token.tokenString, version: nil, HTTPMethod:"GET")
+                            req.startWithCompletionHandler({ (connection, result, error:NSError!) -> Void in
+                                if let error = error {
+                                    print("error \(error)")
+                                } else {
+                                    print("name \(result["name"])")
+                                    print("id \(result["id"])")
+                                    self.username = result["name"] as! String
+                                    self.fbid = result["id"] as! String
+                                    self.performSegueWithIdentifier("LoginSegue", sender: self)
+                                }
+                            })
                             
                         }
                 })
@@ -73,6 +86,8 @@ class LoginViewController: UIViewController {
         if let currentAuthData = currentAuthData, currentToken = currentToken {
             dest.authData = currentAuthData
             dest.token = currentToken
+            dest.username = self.username
+            dest.fbid = self.fbid
             
         }
     }
