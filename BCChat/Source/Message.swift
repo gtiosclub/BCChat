@@ -16,14 +16,19 @@ struct Message {
         return dateFormatter
     }()
     
-    var username:String = "nil"
+    var name:String = "nil"
     var message:String = "nil"
-    var date:NSDate = NSDate()
-    var fbid:String = "nil"
+    var timeStamp:String = "nil"
+    var uid:String = "nil"
     var platform:String = "nil"
     
+    func date() -> NSDate {
+        let t = NSTimeInterval.init(timeStamp)
+        return NSDate(timeIntervalSince1970: t!/1000)
+    }
+    
     func dateString() -> String {
-        return Message.dateFormatter.stringFromDate(date)
+        return Message.dateFormatter.stringFromDate(date())
     }
     
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4D9132AB629C981E87E3D107 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE52594CBE71D0120283F7FE /* Pods.framework */; };
+		DF6245761C93FA1E00E8E88D /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6245751C93FA1E00E8E88D /* Other.swift */; };
 		DFA6C4F41C8FC71C000FC254 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA6C4F31C8FC71C000FC254 /* AppDelegate.swift */; };
 		DFA6C4F91C8FC71C000FC254 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DFA6C4F71C8FC71C000FC254 /* Main.storyboard */; };
 		DFA6C4FC1C8FC71C000FC254 /* BCChat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DFA6C4FA1C8FC71C000FC254 /* BCChat.xcdatamodeld */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		1F7BB4430842A5EF595DF338 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		DF6245751C93FA1E00E8E88D /* Other.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
 		DFA6C4F01C8FC71C000FC254 /* BCChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BCChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFA6C4F31C8FC71C000FC254 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DFA6C4F81C8FC71C000FC254 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			children = (
 				DFA6C4F31C8FC71C000FC254 /* AppDelegate.swift */,
 				DFA6C5161C8FFEE6000FC254 /* Message.swift */,
+				DF6245751C93FA1E00E8E88D /* Other.swift */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 				DFA6C5151C8FFB4A000FC254 /* ChatTableViewCell.swift in Sources */,
 				DFA6C5171C8FFEE6000FC254 /* Message.swift in Sources */,
 				DFA6C5101C8FF182000FC254 /* ChatViewController.swift in Sources */,
+				DF6245761C93FA1E00E8E88D /* Other.swift in Sources */,
 				DFA6C4FC1C8FC71C000FC254 /* BCChat.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

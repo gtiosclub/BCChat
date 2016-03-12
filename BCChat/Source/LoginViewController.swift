@@ -12,13 +12,14 @@ import FBSDKLoginKit
 
 class LoginViewController: UIViewController {
     
+    @IBOutlet weak var facebookButton: UIButton!
     var currentAuthData:FAuthData?
     var currentToken:FBSDKAccessToken?
 
-    var root = Firebase(url: "https://bootcampchatapp.firebaseio.com")
+    var root = Firebase(url: "https://bootcampchat.firebaseio.com")
     let facebookManager = FBSDKLoginManager()
     
-    var username:String = ""
+    var name:String = ""
     var fbid:String = ""
     
     override func viewDidLoad() {
@@ -56,6 +57,7 @@ class LoginViewController: UIViewController {
                             print("Login failed. \(error)")
                         } else {
                             print("Logged in! \(authData)")
+                            self.facebookButton.setAttributedTitle(NSAttributedString(string: "Logging in..."), forState: .Normal)
                             self.currentAuthData = authData
                             self.currentToken = facebookResult.token
                             let req = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"name,id"], tokenString:facebookResult.token.tokenString, version: nil, HTTPMethod:"GET")
@@ -65,7 +67,7 @@ class LoginViewController: UIViewController {
                                 } else {
                                     print("name \(result["name"])")
                                     print("id \(result["id"])")
-                                    self.username = result["name"] as! String
+                                    self.name = result["name"] as! String
                                     self.fbid = result["id"] as! String
                                     self.performSegueWithIdentifier("LoginSegue", sender: self)
                                 }
@@ -77,6 +79,9 @@ class LoginViewController: UIViewController {
         })
     }
     
+    func loginFailed() {
+        
+    }
 
     // MARK: - Navigation
 
@@ -86,7 +91,7 @@ class LoginViewController: UIViewController {
         if let currentAuthData = currentAuthData, currentToken = currentToken {
             dest.authData = currentAuthData
             dest.token = currentToken
-            dest.username = self.username
+            dest.name = self.name
             dest.fbid = self.fbid
             
         }
