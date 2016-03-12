@@ -16,9 +16,9 @@ struct Message {
         return dateFormatter
     }()
     
-    var name:String = "nil"
-    var message:String = "nil"
-    var timeStamp:String = "nil"
+    var name:String = "Anonymous"
+    var message:String = ""
+    var timeStamp:String = ""
     var uid:String = "nil"
     var platform:String = "nil"
     
