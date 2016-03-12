@@ -64,6 +64,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidAppear:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidDisappear", name: UIKeyboardWillHideNotification, object: nil)
     }
+   
+    //every time the view loads up, load up messages
+    override func viewWillAppear(animated: Bool) {
+        receiveMessages()
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -72,7 +77,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     //===========================================================================
     //MARK: - FIREBASE
     //===========================================================================
-    override func viewWillAppear(animated: Bool) {
+    
+    func receiveMessages() {
         let messagesRoot = root.childByAppendingPath("messages")
         //query for every message. This block gets called for each individual message
         messagesRoot.observeEventType(.ChildAdded, withBlock: {messageSnapshot in
