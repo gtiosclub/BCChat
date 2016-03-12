@@ -15,23 +15,20 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var facebookButton: UIButton!
     var currentAuthData:FAuthData?
     var currentToken:FBSDKAccessToken?
-
     var root = Firebase(url: "https://bootcampchat.firebaseio.com")
     let facebookManager = FBSDKLoginManager()
-    
     var name:String = ""
     var fbid:String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setNeedsStatusBarAppearanceUpdate()
-        // Do any additional setup after loading the view.
     }
-    
+   
+    //makes the status bar at the top white instead of black
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
     }
-    
     override func prefersStatusBarHidden() -> Bool {
         return false
     }
@@ -41,20 +38,23 @@ class LoginViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    
+    //login logic. This is disgusting
     @IBAction func loginWithFacebook(sender: UIButton) {
         facebookManager.logInWithReadPermissions(["email"], handler: {
             (facebookResult, facebookError) -> Void in
             if facebookError != nil {
                 print("Facebook login failed. Error \(facebookError)")
+                self.loginFailed()
             } else if facebookResult.isCancelled {
                 print("Facebook login was cancelled.")
+                self.loginFailed()
             } else {
                 let accessToken = FBSDKAccessToken.currentAccessToken().tokenString
                 self.root.authWithOAuthProvider("facebook", token: accessToken,
                     withCompletionBlock: { error, authData in
                         if error != nil {
                             print("Login failed. \(error)")
+                            self.loginFailed()
                         } else {
                             print("Logged in! \(authData)")
                             self.facebookButton.setAttributedTitle(NSAttributedString(string: "Logging in..."), forState: .Normal)
@@ -79,13 +79,13 @@ class LoginViewController: UIViewController {
         })
     }
     
+    //called when facebook or firebase fails
     func loginFailed() {
-        
+        self.facebookButton.setAttributedTitle(NSAttributedString(string: "Login Failed"), forState: .Normal)
+       
     }
 
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    //called before going to the next scene
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let dest = segue.destinationViewController as! ChatViewController
         if let currentAuthData = currentAuthData, currentToken = currentToken {
